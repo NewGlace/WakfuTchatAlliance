@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Wakfu Tchat Alliance</title>
+    <style>
+      
+      html, body {
+        margin: 0; padding: 0;
+        height: 100%;
+        background: transparent;
+        color: white;
+        font-family: sans-serif;
+        -webkit-user-select: none;
+        user-select: none;
+        overflow: hidden;
+      }
+
+      #barre-haut {
+        height: 30px;
+        background: rgba(30,30,30);
+        -webkit-app-region: drag;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 8px;
+        user-select: none;
+      }
+
+      #btn {
+        width: 24px;
+        height: 24px;
+        margin-left: 8px;
+        background: rgba(80,80,80,0.6);
+        color: white;
+        text-align: center;
+        line-height: 24px;
+        cursor: pointer;
+        font-size: 16px;
+        -webkit-app-region: no-drag;
+        border-radius: 6px;
+        transition: background 0.3s;
+      }
+      #btn:hover {
+        background: rgba(255, 0, 0, 0.8);
+      }
+
+      #container {
+        height: calc(100% - 30px);
+        display: flex;
+        overflow-y: auto;
+
+        flex-direction: column;
+        background: rgba(20,20,20,0.8);
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        overflow: hidden;
+      }
+      #container2 {
+       
+        background: rgba(20,20,20,0.8);
+      }
+      #messages::-webkit-scrollbar,#menu-joueurs::-webkit-scrollbar {
+        width: 8px;
+      }   
+
+      #messages::-webkit-scrollbar-track,#menu-joueurs::-webkit-scrollbar-track {
+        background: rgba(50, 50, 50, 0.2);
+        border-radius: 8px;
+      }   
+
+      #messages::-webkit-scrollbar-thumb,#menu-joueurs::-webkit-scrollbar-thumb {
+        background: rgba(200, 200, 200, 0.5);
+        border-radius: 8px;
+        transition: background-color 0.3s;
+      }   
+
+      #messages::-webkit-scrollbar-thumb:hover,#menu-joueurs::-webkit-scrollbar-thumb:hover {
+        background: rgba(200, 200, 200, 0.8);
+      }
+
+      #input-zone {
+        padding: 8px;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        display: flex;
+        position: relative;
+      }
+
+      #input {
+        outline: none;
+        box-shadow: none;
+        flex: 1;
+        border: none;
+        border-radius: 3px;
+        padding: 8px 12px;
+        font-size: 11px;
+        background: rgba(70,70,70,0.9);
+        color: white;
+        outline: none;
+        user-select: text;
+        -webkit-app-region: no-drag;
+      }
+
+      .suggestion-list {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        margin-left: 8px;
+        margin-right: 8px;
+        border: none;
+        border-radius: 3px;
+        padding: 8px 12px;
+        font-size: 11px;
+        background: rgba(70,70,70,0.9);
+        color: white;
+        z-index: 10;
+      }
+
+      #messages {
+        flex: 1;
+        max-width: 100%;
+        padding: 10px;
+        overflow-y: auto;
+        font-size: 11px;
+        color: white;
+      }
+      .message {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 10px 0;
+        max-width: 100%;
+      }
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .text-wrapper {
+        flex: 1;
+        word-break: break-word;
+        line-height: 1.4;
+      }
+
+      .line {
+        display: inline;
+      }
+
+      .meta {
+        white-space: nowrap;
+        font-weight: bold;
+      }
+      .username {
+        color: #9d9d9d;
+      }
+      .content {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .guild-Desperados {
+        color: #af0000;
+        transition: color 0.3s;
+      }
+      .guild-AncienMonde {
+        color: #4a924a;
+        transition: color 0.3s;
+      }
+      .guild-LeTier-Quar {
+        color: #a870e0;
+        transition: color 0.3s;
+      }
+      .guild-Undefined {
+        color: #9d9d9d;
+        transition: color 0.3s;
+      }
+
+      .guild-Desperados:hover {
+        color: #db0000;
+      }
+      .guild-AncienMonde:hover {
+        color: #3dad3d;
+      }
+      .guild-LeTier-Quar:hover {
+        color: #c695f7;
+      }
+      .guild-Undefined:hover {
+        color: #bcbcbc;
+      }
+      .username-oro {
+        font-weight: bold;
+        white-space: nowrap;
+        background: linear-gradient(270deg, #ff70fd, #ffc4fe, #ff70fd);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 3s ease infinite;
+      }
+      .username-orowa {
+        color: #f79cf6;
+      }
+      .username-new {
+        font-weight: bold;
+        white-space: nowrap;
+        background: linear-gradient(270deg, #517cff, #98caff, #517cff);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 3s ease infinite;
+      }
+      
+      @keyframes gradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      #connecte-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(80, 80, 80, 0.6);
+        padding: 4px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        -webkit-app-region: no-drag;
+        font-size: 12px;
+        transition: background 0.3s;
+      }
+      #connecte-btn:hover {
+        background: rgba(117, 116, 116, 0.6);
+      }
+      
+      .rond-vert {
+        width: 10px;
+        height: 10px;
+        background-color: #acff4e;
+        border-radius: 50%;
+      }
+      
+      #ms-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(80, 80, 80, 0.6);
+        padding: 4px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        -webkit-app-region: no-drag;
+        font-size: 12px;
+        transition: background 0.3s;
+      }
+      #ms-btn:hover {
+        background: rgba(117, 116, 116, 0.6);
+      }
+      
+
+      #menu-joueurs {
+        position: absolute;
+        top: 35px;
+        left: 8px;
+        background: linear-gradient(145deg, #1e1e1e, #292929);
+        border: 1px solid #444;
+        border-radius: 12px;
+        padding: 10px 12px;
+        z-index: 100;
+        color: white;
+        font-size: 12px;
+        max-width: 260px;
+        max-height: 300px;
+        overflow-y: auto;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        animation: popupFade 0.2s ease-out;
+        backdrop-filter: blur(4px);
+      }
+      
+      @keyframes popupFade {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .guilde-item {
+        margin: 6px 0;
+        font-weight: bold;
+        color: #6cbfff;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.3s;
+      }
+      
+      .guilde-item:hover {
+        color: #a1d7ff;
+      }
+      
+      .guilde-joueurs {
+        max-height: 0;
+        overflow: hidden;
+        margin-left: 10px;
+        padding-left: 10px;
+        border-left: 2px solid rgba(255, 255, 255, 0.1);
+        transition: max-height 0.3s ease;
+      }
+      
+      .rotate.active {
+        transform: rotate(90deg);
+      }
+      .rotate:not(.active) {
+        transform: rotate(0deg);
+      }
+      
+      .guilde-joueurs div {
+        padding: 2px 0;
+        color: #ddd;
+        transition: color 0.2s;
+      }
+      
+      .guilde-joueurs div:hover {
+        color: #fff;
+      }
+      
+      .hidden {
+        display: none;
+      }
+
+      #btn-settings {
+  width: 24px;
+  height: 24px;
+  background: rgba(80,80,80,0.6);
+  color: white;
+  text-align: center;
+  line-height: 24px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: background 0.3s;
+  -webkit-app-region: no-drag;
+}
+#btn-settings:hover {
+  background: rgba(100, 100, 100, 0.8);
+}
+
+#menu-option {
+  position: absolute;
+  top: 35px;
+  right: 40px;
+  background: linear-gradient(145deg, #1e1e1e, #292929);
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 10px 12px;
+  z-index: 100;
+  color: white;
+  font-size: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  animation: popupFade 0.2s ease-out;
+  backdrop-filter: blur(4px);
+}
+
+.menu-option {
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.menu-option:last-child {
+  border-bottom: none;
+}
+.menu-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#btn-settings img {
+  margin-top: 3px;
+  width: 17px;
+  height: 17px;
+}
+.settings-item {
+  padding: 6px 12px;
+  color: #ddd;
+  font-size: 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.15s ease;
+  user-select: none;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: 3px;
+}
+
+.settings-item:hover {
+  background: rgba(120, 120, 200, 0.15);
+  border-left-color: #a9a9a9;
+  transform: translateX(4px);
+  color: #fff;
+}
+
+.settings-item:active {
+  transform: translateX(2px);
+}
+
+.settings-item + .settings-item {
+  margin-top: 4px;
+}
+
+
+ #password-form {
+    margin: 6px 12px 10px 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(20,20,20,0.8);
+
+  }
+
+  #password-form label {
+    font-size: 11px;
+    color: #aaa;
+    user-select: none;
+  }
+
+  #password-form input {
+    padding: 6px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+  }
+
+  #password-form input:focus {
+    outline: none;
+    border-color: #7880c8;
+    box-shadow: 0 0 5px #7880c8;
+  }
+
+  #password-form button {
+    margin-top: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    background: #7880c8;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  #password-form button:hover {
+    background: #5c63b8;
+  }
+
+    .error {
+      background-color: #ffe6e6;            
+      color: #ea5858;                      
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.4s ease;
+    }
+    .drag-over {
+      outline: 2px dashed #acff4e80;
+      background-color: rgba(33, 150, 243, 0.1);
+    }
+    #edit-view label {
+      color: #838383; 
+      display: block;
+    }
+    #edit-view-label {
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+  .content a {
+    color: #7498DD;
+    text-decoration: underline;
+    word-break: break-word;
+  }
+
+.suggestion-item {
+  padding: 4px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #373737;
+}
+</style>
+  </head>
+  <body>
+    <div id="barre-haut">
+      <div id="connecte-btn">
+        <div class="rond-vert"></div>
+        <span id="connecte-label">0 joueurs connecté</span>
+      </div>
+        <div id="ms-btn">
+         <img id= "ms-icon" src="./assets/connection/0.png" height="14" width="14"/>
+        <span id="ms-label">0 ms</span>
+      </div>
+        <div style="display: flex; gap: 8px;">
+        <div id="btn-settings">
+          <img src="assets/gear.svg" alt="Configuration" />
+        </div>
+      <div id="btn">✕</div>
+      </div>
+      <div id="menu-option" class="hidden">
+        <!-- <div class="settings-item" id="modify-password">Modifier le mot de passe</div> -->
+        <!-- <div class="settings-item" id="delete-tokens">Supprimer les tokens</div>  -->
+        <div class="settings-item" id="edit-view">
+          <div id="edit-view-label">Modifier le Tchat</div>
+          <label><input type="checkbox" id="toggle-guild-names" checked> Afficher le noms de guilde</label><br>
+          <label><input type="checkbox" id="toggle-guild-icons" checked> Afficher l'icône de guilde</label>
+          <label><input type="checkbox" id="toggle-timestamps" checked> Afficher l'heure des messages</label><br>
+        </div>
+      </div>
+      <div id="menu-joueurs" class="hidden"></div>
+    </div>
+    <div id="container">
+      <div id="messages"></div>
+              <form id="password-form">
+        <label for="old-password">Ancien mot de passe</label>
+        <input id="old-password" type="password" autocomplete="current-password" />
+        <label for="new-password">Nouveau mot de passe</label>
+        <input id="new-password" type="password" autocomplete="new-password" />
+        <button id="valid-password">Valider</button>
+      </form>
+      <div id="input-zone">
+        <input id="input" type="text" placeholder="Écris ton message..." autocomplete="off" />
+      </div>
+    </div>
+    <script type="module" src="../scripts/websocket.js"></script>
+    <script type="module" src="../scripts/config.js"></script>
+    <script type="module" src="../scripts/close.js"></script>
+    <script type="module" src="../scripts/connected_status.js"></script>
+  </body>
+</html>
+  
