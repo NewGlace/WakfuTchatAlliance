@@ -12,7 +12,7 @@
 ## 🚀 Installation
 
 Pas besoin d’installation complexe. Télécharge simplement l’exécutable ici :  
-👉 [Lien de téléchargement]([https://exemple.com/telecharger-tchat-alliance](https://mega.nz/file/jIUiEIxD#r1hkMNY1u9-zt3Ux6rul0tL9H6ZtuMhevj2QRGgkfC8))
+👉 [Lien de téléchargement 1.1.0](https://mega.nz/file/mUdnQCDT#GzQWKOpxcttr-vRb12znADO3X-5rJfnDxwiwdWb62Ns)
 
 Puis lance-le directement.
 
